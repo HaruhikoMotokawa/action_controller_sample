@@ -7,9 +7,13 @@ class UserRepository {
   final Ref ref;
 
   /// 新規作成
-  Future<void> create() async {
+  Future<void> create({
+    UserRepositoryError error = UserRepositoryError.none,
+  }) async {
     try {
       await Future<void>.delayed(const Duration(microseconds: 1));
+
+      _throwException(error);
       logger.d('create');
     } on DuplicateUserNameException catch (e) {
       throw DuplicateUserNameException(e.message);
@@ -33,4 +37,27 @@ class UserRepository {
       throw Exception('An unexpected error occurred: $e');
     }
   }
+}
+
+extension on UserRepository {
+  void _throwException(UserRepositoryError error) {
+    switch (error) {
+      case UserRepositoryError.firstException:
+        throw DuplicateUserNameException('Duplicate user name');
+      case UserRepositoryError.serverError:
+        throw ServerErrorException('Server error');
+      case UserRepositoryError.exception:
+        throw Exception('An unexpected error occurred');
+      case UserRepositoryError.none:
+        // 正常系
+        break;
+    }
+  }
+}
+
+enum UserRepositoryError {
+  none,
+  firstException,
+  serverError,
+  exception,
 }
