@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:action_controller_sample/core/log/logger.dart';
 import 'package:action_controller_sample/data/repositories/user/exception.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,12 +10,15 @@ class UserRepository {
 
   /// 新規作成
   Future<void> create({
-    UserRepositoryError error = UserRepositoryError.none,
+    bool throwException = false,
   }) async {
     try {
-      await Future<void>.delayed(const Duration(microseconds: 1));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
-      _throwException(error);
+      if (throwException) {
+        _throwException(_Action.create);
+      }
+
       logger.d('create');
     } on DuplicateUserNameException catch (e) {
       throw DuplicateUserNameException(e.message);
@@ -40,24 +45,32 @@ class UserRepository {
 }
 
 extension on UserRepository {
-  void _throwException(UserRepositoryError error) {
-    switch (error) {
-      case UserRepositoryError.firstException:
-        throw DuplicateUserNameException('Duplicate user name');
-      case UserRepositoryError.serverError:
+  /// Exceptionをランダムにthrowする
+  void _throwException(_Action action) {
+    final random = Random();
+    final index = random.nextInt(_UserRepositoryError.values.length);
+    switch (_UserRepositoryError.values[index]) {
+      case _UserRepositoryError.firstException:
+        final exception = switch (action) {
+          _Action.create => DuplicateUserNameException('Duplicate user name'),
+          _Action.update => UserNotFoundException('User not found'),
+        };
+        throw exception;
+      case _UserRepositoryError.serverError:
         throw ServerErrorException('Server error');
-      case UserRepositoryError.exception:
+      case _UserRepositoryError.exception:
         throw Exception('An unexpected error occurred');
-      case UserRepositoryError.none:
-        // 正常系
-        break;
     }
   }
 }
 
-enum UserRepositoryError {
-  none,
+enum _UserRepositoryError {
   firstException,
   serverError,
   exception,
+}
+
+enum _Action {
+  create,
+  update,
 }
