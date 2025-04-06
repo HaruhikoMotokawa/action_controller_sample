@@ -1,3 +1,4 @@
+import 'package:action_controller_sample/presentation/screen/home/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,12 +13,4 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(home: HomeScreen());
   }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) =>
-      const Scaffold(body: Center(child: Text('Hello World!')));
 }
