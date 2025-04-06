@@ -1,3 +1,5 @@
+import 'package:action_controller_sample/presentation/screen/apple/screen.dart';
+import 'package:action_controller_sample/presentation/screen/banana/screen.dart';
 import 'package:action_controller_sample/presentation/screen/home/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +23,26 @@ final _goRouter = GoRouter(
         return MaterialPage(
           key: state.pageKey,
           child: const HomeScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppleScreen.path,
+      name: AppleScreen.name,
+      pageBuilder: (context, state) {
+        return MaterialPage(
+          key: state.pageKey,
+          child: const AppleScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: BananaScreen.path,
+      name: BananaScreen.name,
+      pageBuilder: (context, state) {
+        return MaterialPage(
+          key: state.pageKey,
+          child: const BananaScreen(),
         );
       },
     ),
