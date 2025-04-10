@@ -1,7 +1,7 @@
 import 'package:action_controller_sample/domain/enums/screen_location.dart';
 
-class ExceptionWithLocation implements Exception {
-  const ExceptionWithLocation(
+class ActionException implements Exception {
+  const ActionException(
     this.exception,
     this.location,
   );
@@ -14,7 +14,7 @@ class ExceptionWithLocation implements Exception {
 }
 
 extension ExceptionWithLocationExtension on Exception {
-  ExceptionWithLocation withLocation(ScreenLocation location) {
-    return ExceptionWithLocation(this, location);
+  ActionException withLocation(ScreenLocation location) {
+    return ActionException(this, location);
   }
 }

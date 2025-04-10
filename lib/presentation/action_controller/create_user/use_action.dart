@@ -42,10 +42,14 @@ void useCreateUserHandler(WidgetRef ref) {
   ref.listen(
     createUserActionControllerProvider,
     (_, next) {
-      final error = next.error;
-      final location = (error! as ExceptionWithLocation).location;
-      if (next.isLoadingFailed) {
-        switch (next.error) {
+      if (!next.isLoadingFailed) return;
+
+      if (next.error
+          case ActionException(
+            exception: final exception,
+            location: final location
+          )) {
+        switch (exception) {
           case DuplicateUserNameException():
             switch (location) {
               case ScreenLocation.home:
