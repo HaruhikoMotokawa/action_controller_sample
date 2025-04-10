@@ -5,6 +5,7 @@ import 'package:action_controller_sample/presentation/action_controller/scoped_e
 import 'package:action_controller_sample/presentation/shared/dialog/app_dialog.dart';
 import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
 import 'package:action_controller_sample/util/extension_async_value.dart';
+import 'package:async/async.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,30 +13,35 @@ typedef CreateUserAction = ({
   Future<void> Function({required ScreenLocation location}) action,
 });
 
-CreateUserAction useCreateUser(WidgetRef ref) {
+/// CreateUserActionを使用するためのフック
+CreateUserAction useCreateUserController(WidgetRef ref) {
   //----------------------------------------------------------------------------
   // property
   //----------------------------------------------------------------------------
   final provider = createUserActionControllerProvider;
   final actionController = ref.read(provider.notifier);
   final context = useContext();
+  final cache = AsyncCache<void>.ephemeral();
 
   //----------------------------------------------------------------------------
   // action
   //----------------------------------------------------------------------------
 
   Future<void> action({required ScreenLocation location}) async {
-    await actionController.execute(location: location);
+    await cache.fetch(() async {
+      await actionController.execute(location: location);
 
-    final hasError = ref.read(provider).hasError;
-    if (!context.mounted || hasError) return;
+      final hasError = ref.read(provider).hasError;
+      if (!context.mounted || hasError) return;
 
-    await showAppSnackBar(context, message: 'User created successfully');
+      await showAppSnackBar(context, message: 'User created successfully');
+    });
   }
 
   return (action: action);
 }
 
+/// CreateUserActionControllerのエラーハンドリング
 void useCreateUserHandler(WidgetRef ref) {
   final context = useContext();
 

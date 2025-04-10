@@ -1,5 +1,5 @@
 import 'package:action_controller_sample/domain/enums/screen_location.dart';
-import 'package:action_controller_sample/presentation/action_controller/create_user/use_action.dart';
+import 'package:action_controller_sample/presentation/action_controller/create_user/use_action_controller.dart';
 import 'package:action_controller_sample/presentation/screen/apple/screen.dart';
 import 'package:action_controller_sample/presentation/screen/banana/screen.dart';
 import 'package:action_controller_sample/presentation/shared/exception_handler_consumer/consumer.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createUser = useCreateUser(ref);
+    final createUser = useCreateUserController(ref);
     return ExceptionHandlerConsumer(
       child: Scaffold(
         appBar: AppBar(
