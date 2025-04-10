@@ -10,7 +10,7 @@ class UserRepository {
 
   /// 新規作成
   Future<void> create({
-    bool throwException = false,
+    bool throwException = true,
   }) async {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 500));
