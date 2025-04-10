@@ -1,4 +1,4 @@
-import 'package:action_controller_sample/presentation/action_controller/create_user_action_controller.dart';
+import 'package:action_controller_sample/presentation/action_controller/create_user/action_controller.dart';
 import 'package:action_controller_sample/presentation/screen/apple/screen.dart';
 import 'package:action_controller_sample/presentation/screen/banana/screen.dart';
 import 'package:action_controller_sample/presentation/shared/exception_handler_consumer/consumer.dart';
@@ -17,6 +17,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // listen _handler
     return ExceptionHandlerConsumer(
       child: Scaffold(
         appBar: AppBar(
@@ -56,10 +57,12 @@ class HomeScreen extends ConsumerWidget {
 
 extension on HomeScreen {
   Future<void> _createUser(BuildContext context, WidgetRef ref) async {
-    final success =
-        await ref.read(createUserActionControllerProvider.notifier).execute();
+    final actionController =
+        ref.read(createUserActionControllerProvider.notifier);
+    await actionController.execute();
+    final state = ref.read(createUserActionControllerProvider);
 
-    if (!context.mounted || !success) return;
+    if (!context.mounted || state.hasError) return;
     await showAppSnackBar(context, message: 'User Created');
   }
 }
