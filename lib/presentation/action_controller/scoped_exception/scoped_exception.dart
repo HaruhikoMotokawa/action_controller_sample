@@ -10,10 +10,6 @@ class ActionException implements Exception {
   );
   final Exception exception;
   final ScreenLocation location;
-
-  @override
-  String toString() =>
-      'ExceptionWithLocation(exception: $exception, location: $location)';
 }
 
 extension ExceptionWithLocation on Exception {
