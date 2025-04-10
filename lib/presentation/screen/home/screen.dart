@@ -1,15 +1,15 @@
-import 'package:action_controller_sample/presentation/action_controller/create_user/action_controller.dart';
+import 'package:action_controller_sample/domain/enums/screen_location.dart';
+import 'package:action_controller_sample/presentation/action_controller/create_user/use_action.dart';
 import 'package:action_controller_sample/presentation/screen/apple/screen.dart';
 import 'package:action_controller_sample/presentation/screen/banana/screen.dart';
 import 'package:action_controller_sample/presentation/shared/exception_handler_consumer/consumer.dart';
-import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part '_list_tile.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
 
   static const String path = '/';
@@ -17,7 +17,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // listen _handler
+    final createUser = useCreateUser(ref);
     return ExceptionHandlerConsumer(
       child: Scaffold(
         appBar: AppBar(
@@ -39,7 +39,8 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const Spacer(),
                 ElevatedButton(
-                  onPressed: () => _createUser(context, ref),
+                  onPressed: () =>
+                      createUser.action(location: ScreenLocation.home),
                   child: const Text('Create User'),
                 ),
                 ElevatedButton(
@@ -52,17 +53,5 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-extension on HomeScreen {
-  Future<void> _createUser(BuildContext context, WidgetRef ref) async {
-    final actionController =
-        ref.read(createUserActionControllerProvider.notifier);
-    await actionController.execute();
-    final state = ref.read(createUserActionControllerProvider);
-
-    if (!context.mounted || state.hasError) return;
-    await showAppSnackBar(context, message: 'User Created');
   }
 }
