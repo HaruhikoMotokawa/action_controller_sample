@@ -1,7 +1,7 @@
 import 'package:action_controller_sample/data/repositories/user/exception.dart';
 import 'package:action_controller_sample/domain/enums/screen_location.dart';
+import 'package:action_controller_sample/presentation/action_controller/_action_exception/exception.dart';
 import 'package:action_controller_sample/presentation/action_controller/create_user/action_controller.dart';
-import 'package:action_controller_sample/presentation/action_controller/scoped_exception/scoped_exception.dart';
 import 'package:action_controller_sample/presentation/shared/dialog/app_dialog.dart';
 import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
 import 'package:action_controller_sample/util/extension_async_value.dart';

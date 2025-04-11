@@ -1,6 +1,6 @@
 import 'package:action_controller_sample/data/repositories/user/provider.dart';
 import 'package:action_controller_sample/domain/enums/screen_location.dart';
-import 'package:action_controller_sample/presentation/action_controller/scoped_exception/scoped_exception.dart';
+import 'package:action_controller_sample/presentation/action_controller/_action_exception/exception.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'action_controller.g.dart';
