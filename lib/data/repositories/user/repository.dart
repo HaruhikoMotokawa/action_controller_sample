@@ -30,9 +30,15 @@ class UserRepository {
   }
 
   /// 更新
-  Future<void> update() async {
+  Future<void> update({
+    bool throwException = true,
+  }) async {
     try {
-      await Future<void>.delayed(const Duration(microseconds: 1));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      if (throwException) {
+        _throwException(_Action.update);
+      }
       logger.d('update');
     } on UserNotFoundException catch (e) {
       throw UserNotFoundException(e.message);
