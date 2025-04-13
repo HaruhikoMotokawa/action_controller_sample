@@ -1,8 +1,10 @@
 import 'package:action_controller_sample/domain/enums/caller.dart';
+import 'package:action_controller_sample/domain/models/user.dart';
 import 'package:action_controller_sample/presentation/action_controller/create_user/action_controller.dart';
 import 'package:action_controller_sample/presentation/action_controller/update_user/action_controller.dart';
 import 'package:action_controller_sample/presentation/screen/apple/screen.dart';
 import 'package:action_controller_sample/presentation/screen/banana/screen.dart';
+import 'package:action_controller_sample/presentation/shared/state/throw_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,6 +32,7 @@ class HomeScreen extends HookConsumerWidget {
           child: Column(
             spacing: 12,
             children: [
+              const _SwitchListTile(),
               _ListTile(
                 screenName: 'Apple',
                 onTap: () => context.push(AppleScreen.path),
@@ -40,7 +43,14 @@ class HomeScreen extends HookConsumerWidget {
               ),
               const Spacer(),
               ElevatedButton(
-                onPressed: createUser.action,
+                onPressed: () async {
+                  final user = User(
+                    id: '1',
+                    name: 'test',
+                    email: 'example@gmail.com',
+                  );
+                  await createUser.action(user);
+                },
                 child: const Text('Create User'),
               ),
               ElevatedButton(

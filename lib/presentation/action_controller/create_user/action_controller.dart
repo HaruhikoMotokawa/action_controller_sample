@@ -1,7 +1,9 @@
 import 'package:action_controller_sample/data/repositories/user/exception.dart';
 import 'package:action_controller_sample/domain/enums/caller.dart';
+import 'package:action_controller_sample/domain/models/user.dart';
 import 'package:action_controller_sample/presentation/shared/dialog/app_dialog.dart';
 import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
+import 'package:action_controller_sample/presentation/shared/state/throw_exception.dart';
 import 'package:action_controller_sample/use_case/executors/create_user/executor.dart';
 import 'package:action_controller_sample/util/extension_async_value.dart';
 import 'package:async/async.dart';
@@ -9,7 +11,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef CreateUserAction = ({
-  Future<void> Function() action,
+  Future<void> Function(User user) action,
 });
 
 /// CreateUserActionを使用するためのフック
@@ -25,12 +27,16 @@ CreateUserAction useCreateUserController(
   final context = useContext();
   final cache = AsyncCache<void>.ephemeral();
 
+  // INFO: テストのために例外をスローするかどうかをwatch
+  final throwException = ref.watch(throwExceptionProvider);
+
   //----------------------------------------------------------------------------
   // action
   //----------------------------------------------------------------------------
-  Future<void> action() async {
+  Future<void> action(User user) async {
     await cache.fetch(() async {
-      await createUser();
+      // INFO: 例外をスローするかどうかを渡す
+      await createUser(user, throwException: throwException);
 
       final hasError = ref.read(provider).hasError;
       if (!context.mounted || hasError) return;
