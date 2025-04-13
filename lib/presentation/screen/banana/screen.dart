@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:action_controller_sample/data/repositories/user/provider.dart';
 import 'package:action_controller_sample/domain/enums/caller.dart';
 import 'package:action_controller_sample/domain/models/user.dart';
-import 'package:action_controller_sample/presentation/action_controller/_hooks/hooks.dart'
-    as action_hooks;
 import 'package:action_controller_sample/presentation/action_controller/_hooks/hooks.dart';
 import 'package:action_controller_sample/presentation/action_controller/create_user/action_controller.dart';
 import 'package:action_controller_sample/presentation/action_controller/update_user/action_controller.dart';
