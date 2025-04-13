@@ -8,7 +8,9 @@ import 'package:action_controller_sample/presentation/shared/state/throw_excepti
 import 'package:action_controller_sample/use_case/executors/update_user/executor.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-typedef UpdateUserAction = Action<void, Null>;
+typedef UpdateUserAction = ({
+  Future<void> Function() action,
+});
 
 /// UpdateUserActionを使用するためのフック
 UpdateUserAction useUpdateUserController(
@@ -20,20 +22,21 @@ UpdateUserAction useUpdateUserController(
   //----------------------------------------------------------------------------
   final provider = updateUserExecutorProvider(caller);
   final updateUser = ref.read(provider.notifier);
+  final (:cache, :context) = useCacheAndContext();
 
   final throwException = ref.watch(throwExceptionProvider);
   //----------------------------------------------------------------------------
   // action
   //----------------------------------------------------------------------------
-  final cache = useCacheAction<void, Null>(
-    action: (context) async {
+  Future<void> action() async {
+    await cache.fetch(() async {
       await updateUser.call(throwException: throwException);
       final hasError = ref.read(provider).hasError;
       if (!context.mounted || hasError) return;
 
       await showAppSnackBar(context, message: 'User updated successfully');
-    },
-  );
+    });
+  }
 
   //----------------------------------------------------------------------------
   // Exception Handler
@@ -118,5 +121,5 @@ UpdateUserAction useUpdateUserController(
   //----------------------------------------------------------------------------
   // return
   //---------------------------------------------------------------------------
-  return (action: cache.action);
+  return (action: action);
 }

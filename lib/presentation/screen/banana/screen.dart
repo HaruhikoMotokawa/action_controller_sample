@@ -3,11 +3,17 @@ import 'dart:async';
 import 'package:action_controller_sample/data/repositories/user/provider.dart';
 import 'package:action_controller_sample/domain/enums/caller.dart';
 import 'package:action_controller_sample/domain/models/user.dart';
+import 'package:action_controller_sample/presentation/action_controller/_hooks/hooks.dart'
+    as action_hooks;
+import 'package:action_controller_sample/presentation/action_controller/_hooks/hooks.dart';
 import 'package:action_controller_sample/presentation/action_controller/create_user/action_controller.dart';
 import 'package:action_controller_sample/presentation/action_controller/update_user/action_controller.dart';
+import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
+import 'package:action_controller_sample/use_case/executors/schedule_todo_notification/executor.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+part '_schedule_todo_notification_controller.dart';
 part '_screen_controller.dart';
 
 class BananaScreen extends HookConsumerWidget {
@@ -26,7 +32,10 @@ class BananaScreen extends HookConsumerWidget {
         title: const Text('Banana Screen'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              const todoId = 'your_todo_id_here';
+              await screenController.scheduleTodoNotification(todoId);
+            },
             icon: const Icon(Icons.notification_add),
           ),
         ],
