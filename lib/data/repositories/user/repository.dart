@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:action_controller_sample/core/log/logger.dart';
 import 'package:action_controller_sample/data/repositories/user/exception.dart';
+import 'package:action_controller_sample/domain/models/user.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class UserRepository {
@@ -9,7 +10,8 @@ class UserRepository {
   final Ref ref;
 
   /// 新規作成
-  Future<void> create({
+  Future<void> create(
+    User user, {
     bool throwException = true,
   }) async {
     try {
@@ -47,6 +49,19 @@ class UserRepository {
     } on Exception catch (e) {
       throw Exception('An unexpected error occurred: $e');
     }
+  }
+
+  /// 取得
+  Future<List<User>> findAll() async {
+    // 適当にユーザーを生成
+    return List.generate(
+      20,
+      (index) => User(
+        id: '$index',
+        name: 'User $index',
+        email: 'user$index@example.com',
+      ),
+    );
   }
 }
 
