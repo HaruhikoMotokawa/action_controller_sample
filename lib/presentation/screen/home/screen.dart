@@ -17,11 +17,12 @@ class HomeScreen extends HookConsumerWidget {
   static const String path = '/';
   static const String name = 'home_screen';
 
+  static const _caller = Caller.homeScreen;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createUser = useCreateUserController(ref, caller: Caller.homeScreen);
-
-    final updateUser = useUpdateUserController(ref, caller: Caller.homeScreen);
+    final createUser = useCreateUserController(ref, caller: _caller);
+    final updateUser = useUpdateUserController(ref, caller: _caller);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Screen'),
@@ -41,7 +42,7 @@ class HomeScreen extends HookConsumerWidget {
                 screenName: 'Banana',
                 onTap: () => context.push(BananaScreen.path),
               ),
-              const Spacer(),
+              const Divider(),
               ElevatedButton(
                 onPressed: () async {
                   final user = User(

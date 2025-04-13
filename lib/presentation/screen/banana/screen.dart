@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:action_controller_sample/data/repositories/user/provider.dart';
 import 'package:action_controller_sample/domain/enums/caller.dart';
 import 'package:action_controller_sample/domain/models/user.dart';
@@ -6,34 +8,39 @@ import 'package:action_controller_sample/presentation/action_controller/update_u
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+part '_screen_controller.dart';
+
 class BananaScreen extends HookConsumerWidget {
   const BananaScreen({super.key});
 
   static const String path = '/banana';
   static const String name = 'banana_screen';
 
-  static const _caller = Caller.bananaScreen;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createUser = useCreateUserController(ref, caller: _caller);
-    final updateUser = useUpdateUserController(ref, caller: _caller);
+    final screenController = _useScreenController(ref);
 
     final asyncUsers = ref.watch(usersProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Banana Screen'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notification_add),
+          ),
+        ],
       ),
       body: switch (asyncUsers) {
-        AsyncData(value: final users) => ListView.builder(
+        AsyncData(value: final users) => ListView.separated(
             itemCount: users.length,
+            separatorBuilder: (context, index) => const Divider(),
             itemBuilder: (context, index) {
               final user = users[index];
               return ListTile(
                 title: Text(user.name),
                 subtitle: Text(user.email),
-                onTap: () async {
-                  await updateUser.action();
-                },
+                onTap: screenController.updateUser,
               );
             },
           ),
@@ -62,7 +69,7 @@ class BananaScreen extends HookConsumerWidget {
             name: 'test',
             email: 'example@gmail.com',
           );
-          await createUser.action(user);
+          await screenController.createUser(user);
         },
         child: const Icon(Icons.add),
       ),

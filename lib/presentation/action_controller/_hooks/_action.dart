@@ -19,7 +19,7 @@ Action<R, Args> useCacheAction<R, Args>({
   //----------------------------------------------------------------------------
   // property
   //----------------------------------------------------------------------------
-  final cache = AsyncCache<void>.ephemeral();
+  final cache = useMemoized(AsyncCache<void>.ephemeral);
   final context = useContext();
 
   //----------------------------------------------------------------------------
@@ -27,12 +27,11 @@ Action<R, Args> useCacheAction<R, Args>({
   //----------------------------------------------------------------------------
 
   FutureOr<R> cacheAction([Args? args]) async {
-    late final R result;
+    R? result;
     await cache.fetch(() async {
       result = await action(context);
-      return;
     });
-    return result;
+    return result as R;
   }
 
   return (action: cacheAction);
