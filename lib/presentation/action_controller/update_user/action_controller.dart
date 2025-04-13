@@ -1,17 +1,14 @@
-import 'dart:async';
-
 import 'package:action_controller_sample/data/repositories/user/exception.dart';
 import 'package:action_controller_sample/domain/enums/caller.dart';
 import 'package:action_controller_sample/presentation/action_controller/_hooks/hooks.dart';
 import 'package:action_controller_sample/presentation/shared/banner/app_banner.dart';
 import 'package:action_controller_sample/presentation/shared/dialog/app_dialog.dart';
 import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
+import 'package:action_controller_sample/presentation/shared/state/throw_exception.dart';
 import 'package:action_controller_sample/use_case/executors/update_user/executor.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-typedef UpdateUserAction = ({
-  FutureOr<void> Function() action,
-});
+typedef UpdateUserAction = Action<void, Null>;
 
 /// UpdateUserActionを使用するためのフック
 UpdateUserAction useUpdateUserController(
@@ -24,24 +21,27 @@ UpdateUserAction useUpdateUserController(
   final provider = updateUserExecutorProvider(caller);
   final updateUser = ref.read(provider.notifier);
 
+  final throwException = ref.watch(throwExceptionProvider);
   //----------------------------------------------------------------------------
-  // action and exception handler
+  // action
   //----------------------------------------------------------------------------
-  final base = useActionControllerBase(
-    ref,
-    provider,
+  final cache = useCacheAction<void, Null>(
     action: (context) async {
-      await updateUser();
-
+      await updateUser.call(throwException: throwException);
       final hasError = ref.read(provider).hasError;
       if (!context.mounted || hasError) return;
 
-      await showAppSnackBar(
-        context,
-        message: 'User updated successfully in $caller',
-      );
+      await showAppSnackBar(context, message: 'User updated successfully');
     },
-    onError: (exception, context) {
+  );
+
+  //----------------------------------------------------------------------------
+  // Exception Handler
+  //----------------------------------------------------------------------------
+  useActionExceptionHandler(
+    provider,
+    ref,
+    onException: (exception, context) {
       switch ((exception, caller)) {
         case (DuplicateUserNameException(), Caller.homeScreen):
           showAppSnackBar(
@@ -118,5 +118,5 @@ UpdateUserAction useUpdateUserController(
   //----------------------------------------------------------------------------
   // return
   //---------------------------------------------------------------------------
-  return (action: base.action);
+  return (action: cache.action);
 }

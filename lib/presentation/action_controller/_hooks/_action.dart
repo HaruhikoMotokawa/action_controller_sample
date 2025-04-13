@@ -1,14 +1,20 @@
 part of 'hooks.dart';
 
-typedef Action = ({
-  FutureOr<void> Function() action,
-});
+typedef Action<R, Args> = ({FutureOr<R> Function([Args args]) action});
 
-/// Actionを使用するためのフック
-Action useAction(
-  WidgetRef ref,
-  Refreshable<AsyncValue<void>> provider, {
-  required FutureOr<void> Function(BuildContext context) action,
+/// Actionをキャッシュして、多重実行を防ぐためのカスタムフック
+///
+/// ```dart
+/// final action = useCacheAction<void, Null>(
+///  action: (context) async {
+///    await updateUser.call();
+///   final hasError = ref.read(provider).hasError;
+///   if (!context.mounted || hasError) return;
+///   showAppSnackBar(context, message: 'User created successfully');
+///  },
+/// ```
+Action<R, Args> useCacheAction<R, Args>({
+  required FutureOr<R> Function(BuildContext context) action,
 }) {
   //----------------------------------------------------------------------------
   // property
@@ -20,12 +26,14 @@ Action useAction(
   // action
   //----------------------------------------------------------------------------
 
-  FutureOr<void> actionWrapper() async {
+  FutureOr<R> cacheAction([Args? args]) async {
+    late final R result;
     await cache.fetch(() async {
-      await action(context);
+      result = await action(context);
+      return;
     });
-    return null;
+    return result;
   }
 
-  return (action: actionWrapper);
+  return (action: cacheAction);
 }

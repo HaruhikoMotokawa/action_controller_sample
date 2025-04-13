@@ -7,6 +7,7 @@ Future<void> showAppDialog(
   required String buttonText,
 }) async {
   return showDialog<void>(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(

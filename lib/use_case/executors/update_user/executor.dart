@@ -9,9 +9,10 @@ class UpdateUserExecutor extends _$UpdateUserExecutor {
   @override
   Future<void> build(Caller caller) async {}
 
-  Future<void> call() async {
-    state = await AsyncValue.guard(() async {
-      await ref.read(userRepositoryProvider).update();
-    });
-  }
+  Future<void> call({required bool throwException}) async =>
+      state = await AsyncValue.guard(() async {
+        await ref
+            .read(userRepositoryProvider)
+            .update(throwException: throwException);
+      });
 }

@@ -14,7 +14,7 @@ void useActionExceptionHandler<T>(
   ref.listen<AsyncValue<T>>(
     provider,
     (_, next) {
-      if (!next.isLoadingFailed) return;
+      if (next.hasError == false && next.isLoading) return;
 
       if (next.error case final exception? when exception is Exception) {
         onException(exception, context);

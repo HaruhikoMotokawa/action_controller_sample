@@ -5,7 +5,6 @@ import 'package:action_controller_sample/presentation/shared/dialog/app_dialog.d
 import 'package:action_controller_sample/presentation/shared/snack_bar/app_snack_bar.dart';
 import 'package:action_controller_sample/presentation/shared/state/throw_exception.dart';
 import 'package:action_controller_sample/use_case/executors/create_user/executor.dart';
-import 'package:action_controller_sample/util/extension_async_value.dart';
 import 'package:async/async.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -49,7 +48,7 @@ CreateUserAction useCreateUserController(
   // Exception Handler
   //----------------------------------------------------------------------------
   ref.listen(provider, (_, next) {
-    if (!next.isLoadingFailed) return;
+    if (next.hasError == false && next.isLoading) return;
 
     if (next.error case final exception? when exception is Exception) {
       switch (exception) {
